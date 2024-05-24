@@ -8,11 +8,13 @@ import { AuthNavigatorRoutesProps } from "@routes/auth.routes";
 import { Input } from "@components/Input";
 import { Button } from "@components/Button";
 
-export function SignIn() {
+export function SignUp() {
+  // ele não tipou aqui, pois usou o goBack
   const navigation = useNavigation<AuthNavigatorRoutesProps>();
 
-  function handleNewAccount() {
-    navigation.navigate("signUp");
+  function handleGoBack() {
+    // navigation.goBack();
+    navigation.navigate("signIn");
   }
 
   return (
@@ -26,12 +28,10 @@ export function SignIn() {
           // defaultSource carrega mais rápido
           defaultSource={BackgroundImg}
           alt="Pessoas treinando"
-          position={"absolute"}
-          // resizeMode="contain"
-          resizeMode="cover"
+          resizeMode="contain"
+          position="absolute"
         />
 
-        {/* margin vertical de 96px, é o 24 */}
         <Center my={24}>
           <LogoSvg />
 
@@ -42,28 +42,27 @@ export function SignIn() {
 
         <Center mb={"auto"}>
           <Heading color="gray.100" fontSize="xl" fontFamily="heading" mb={6}>
-            Acesse sua conta
+            Crie sua conta
           </Heading>
 
+          <Input placeholder="Nome" />
           <Input
             placeholder="E-mail"
             keyboardType="email-address"
             autoCapitalize="none"
           />
           <Input placeholder="Senha" secureTextEntry />
+          {/* no figma tem mais um botão: */}
+          {/* <Input placeholder="Confirme a senha" secureTextEntry /> */}
 
-          <Button title="Acessar" />
+          <Button title="Criar e acessar" />
         </Center>
 
         <Center mt={24}>
-          <Text color="gray.100" fontSize="sm" mb={3} fontFamily={"body"}>
-            Ainda não tem acesso
-          </Text>
-          {/* o button do native base tem a prop de variant */}
           <Button
-            title="Criar conta"
+            title="Voltar para o login"
             variant="outline"
-            onPress={handleNewAccount}
+            onPress={handleGoBack}
           />
         </Center>
       </VStack>
@@ -71,4 +70,4 @@ export function SignIn() {
   );
 }
 
-//
+// utilizando variantes....
