@@ -25,4 +25,4 @@ export default function App() {
   );
 }
 
-// 4 - Rotas privadas - segunda aula
+// 5 - finalziando interfaces - criando componente Group
