@@ -25,4 +25,4 @@ export default function App() {
   );
 }
 
-// 5 - finalziando interfaces - criando componente Group
+// 5 - finalziando interfaces - navegando para a tela de exercício
