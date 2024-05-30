@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { TouchableOpacity } from "react-native";
+import { Alert, TouchableOpacity } from "react-native";
 import {
   Center,
   ScrollView,
@@ -7,7 +7,11 @@ import {
   Skeleton,
   Text,
   Heading,
+  useToast,
 } from "native-base";
+import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from "expo-file-system";
+import { FileInfo } from "expo-file-system";
 
 import { ScreenHeader } from "@components/ScreenHeader";
 import { UserPhoto } from "@components/UserPhoto";
@@ -18,6 +22,58 @@ const PHOTO_SIZE = 33;
 
 export function Profile() {
   const [photoIsLoading, setPhotoIsLoading] = useState(false);
+  const [userPhoto, setUserPhotog] = useState(
+    "https://github.com/Alan-Fedrizzi.png"
+  );
+  const toast = useToast();
+
+  async function handleUserPhotoSelect() {
+    setPhotoIsLoading(true);
+    try {
+      // para acessar o álbum de fotos do telefone do usuário
+      const photoSelected = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images, // All, Videos
+        quality: 1,
+        aspect: [4, 4],
+        allowsEditing: true,
+        // base64: true,
+      });
+
+      // a uri é o path da foto no dispositivo
+      // console.log(photoSelected);
+      if (photoSelected.canceled) return;
+
+      const photoUri = photoSelected.assets[0].uri;
+
+      if (photoUri) {
+        // definir tamanho máximo da imagem, par ausuário não carregar imagem mto pesadas, masi que 5Mb por exemplo...
+        // vamos usar FileSystem do expo
+        const photoInfo = (await FileSystem.getInfoAsync(photoUri)) as FileInfo;
+        console.log(photoInfo);
+
+        const fileSize = photoInfo.size;
+        // traz o tamanho em bites, converter para mega = fileSize / 1024 / 1024
+        // if (fileSize && fileSize / 1024 / 1024 > 0.5) {
+        if (fileSize && fileSize / 1024 / 1024 > 5) {
+          // return Alert.alert(
+          //   "Essa imagem é muito grande. Escolha uma de até 5MB."
+          // );
+          return toast.show({
+            title: "Essa imagem é muito grande. Escolha uma de até 5MB.",
+            // default é bottom
+            placement: "top",
+            bgColor: "red.500",
+          });
+        }
+
+        setUserPhotog(photoUri);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setPhotoIsLoading(false);
+    }
+  }
 
   return (
     <VStack flex={1}>
@@ -39,13 +95,14 @@ export function Profile() {
             />
           ) : (
             <UserPhoto
-              source={{ uri: "https://github.com/Alan-Fedrizzi.png" }}
+              // source={{ uri: "https://github.com/Alan-Fedrizzi.png" }}
+              source={{ uri: userPhoto }}
               alt="Foto do usuário"
               size={PHOTO_SIZE}
             />
           )}
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleUserPhotoSelect}>
             <Text
               color="green.500"
               fontSize={"md"}
