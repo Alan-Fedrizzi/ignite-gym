@@ -25,4 +25,4 @@ export default function App() {
   );
 }
 
-// 5 - finalziando interfaces - navegando para a tela de exercício
+// validando a senha

@@ -13,7 +13,8 @@ export function Routes() {
     // essa Box é só para não aparecer fundo branco na transição das telas
     <Box flex={1} bg={"gray.700"}>
       <NavigationContainer theme={theme}>
-        <AppRoutes />
+        <AuthRoutes />
+        {/* <AppRoutes /> */}
       </NavigationContainer>
     </Box>
   );
