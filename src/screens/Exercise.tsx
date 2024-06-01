@@ -34,7 +34,12 @@ export function Exercise() {
 
         <HStack justifyContent={"space-between"} mt={4} alignItems={"center"}>
           {/* flexShrink={1} faz o texto quebrar, sem empurrar o restante para a fora do container */}
-          <Heading color={"gray.100"} fontSize={"lg"} flexShrink={1}>
+          <Heading
+            color={"gray.100"}
+            fontSize={"lg"}
+            flexShrink={1}
+            fontFamily={"heading"}
+          >
             Puxada frontal
           </Heading>
 
