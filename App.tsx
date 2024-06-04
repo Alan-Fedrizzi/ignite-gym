@@ -25,4 +25,5 @@ export default function App() {
   );
 }
 
-// validando a senha
+// http://localhost:3333/api-docs/
+// 4 Contextos no React Native

@@ -1,13 +1,24 @@
 import { useState } from "react";
+import { Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { VStack, Image, Text, Center, Heading, ScrollView } from "native-base";
+import {
+  VStack,
+  Image,
+  Text,
+  Center,
+  Heading,
+  ScrollView,
+  useToast,
+} from "native-base";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import axios from "axios";
 
+import { api } from "@services/api";
+import { AppError } from "@utils/AppError";
 import LogoSvg from "@assets/logo.svg";
 import BackgroundImg from "@assets/background.png";
-
 import { AuthNavigatorRoutesProps } from "@routes/auth.routes";
 import { Input } from "@components/Input";
 import { Button } from "@components/Button";
@@ -39,6 +50,7 @@ export function SignUp() {
   // const [passwordConfirm, setPasswordConfirm] = useState("");
   // ele não tipou aqui, pois usou o goBack
   const navigation = useNavigation<AuthNavigatorRoutesProps>();
+  const toast = useToast();
 
   const {
     control,
@@ -58,6 +70,8 @@ export function SignUp() {
     navigation.navigate("signIn");
   }
 
+  /*
+  // sem asyn await, usando then, com fetch
   function handleSignUp({
     name,
     email,
@@ -65,7 +79,72 @@ export function SignUp() {
     password_confirm,
   }: FormDataProps) {
     // console.log({ name, email, password, passwordConfirm });
-    console.log({ name, email, password, password_confirm });
+    // console.log({ name, email, password, password_confirm });
+    // temos que colocar o IP address no fetch, pois estamos rodando localmente o banco de dados, no localhost
+    // fetch("http://localhost:3333/users", {
+    fetch("http://192.168.1.81:3333/users", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name, email, password }),
+    })
+      .then((response) => response.json())
+      .then((data) => console.log(data));
+  }
+
+  // com async await, com fetch
+  async function handleSignUp({
+    name,
+    email,
+    password,
+    password_confirm,
+  }: FormDataProps) {
+    const response = await fetch("http://192.168.1.81:3333/users", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name, email, password }),
+    });
+
+    const data = await response.json();
+    console.log(data);
+  }
+  */
+
+  async function handleSignUp({
+    name,
+    email,
+    password,
+    password_confirm,
+  }: FormDataProps) {
+    // api.post("/users", { name, email, password })
+    // .then(() => {})
+    // .catch((error) => {})
+    try {
+      // api.method, peimeiro parâmetro é a rota, o segundo o objeto do body (não precisa passar para string)
+      const response = await api.post("/users", { name, email, password });
+      // response já vem em json
+      console.log(response.data);
+    } catch (error) {
+      // verifica se o erro vem do axios
+      // if (axios.isAxiosError(error)) {
+      //   Alert.alert(error.response?.data.message);
+      // }
+      const isAppError = error instanceof AppError;
+      const title = isAppError
+        ? error.message
+        : "Não foi possível criar a conta. Tente novamente mais tarde.";
+
+      toast.show({
+        title,
+        placement: "top",
+        bgColor: "red.500",
+      });
+    }
   }
 
   return (
