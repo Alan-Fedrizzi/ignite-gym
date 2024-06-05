@@ -1,10 +1,19 @@
+import { useContext } from "react";
 import { useTheme, Box } from "native-base";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 
+import { AuthContext } from "@contexts/AuthContext";
+import { useAuth } from "@hooks/useAuth";
 import { AuthRoutes } from "./auth.routes";
 import { AppRoutes } from "./app.routes";
 
 export function Routes() {
+  // const contextData = useContext(AuthContext);
+  // exibe o que está sendo compartilhado no contexto
+  // console.log("contextData", contextData);
+  const { user } = useAuth();
+  console.log("user", user);
+
   const { colors } = useTheme();
   const theme = DefaultTheme;
   theme.colors.background = colors.gray[700];
