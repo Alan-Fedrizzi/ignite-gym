@@ -22,6 +22,7 @@ import BackgroundImg from "@assets/background.png";
 import { AuthNavigatorRoutesProps } from "@routes/auth.routes";
 import { Input } from "@components/Input";
 import { Button } from "@components/Button";
+import { useAuth } from "@hooks/useAuth";
 
 type FormDataProps = {
   name: string;
@@ -51,6 +52,8 @@ export function SignUp() {
   // ele não tipou aqui, pois usou o goBack
   const navigation = useNavigation<AuthNavigatorRoutesProps>();
   const toast = useToast();
+  const [isLoading, setIsLoading] = useState(false);
+  const { signIn } = useAuth();
 
   const {
     control,
@@ -125,10 +128,13 @@ export function SignUp() {
     // .then(() => {})
     // .catch((error) => {})
     try {
+      setIsLoading(true);
       // api.method, peimeiro parâmetro é a rota, o segundo o objeto do body (não precisa passar para string)
-      const response = await api.post("/users", { name, email, password });
+      // const response = await api.post("/users", { name, email, password });
       // response já vem em json
-      console.log(response.data);
+      // console.log(response.data);
+      await api.post("/users", { name, email, password });
+      await signIn(email, password);
     } catch (error) {
       // verifica se o erro vem do axios
       // if (axios.isAxiosError(error)) {
@@ -144,6 +150,8 @@ export function SignUp() {
         placement: "top",
         bgColor: "red.500",
       });
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -261,6 +269,7 @@ export function SignUp() {
             title="Criar e acessar"
             // o handleSubmit passa todo o conteúdo do form para o handleSignUp
             onPress={handleSubmit(handleSignUp)}
+            isLoading={isLoading}
           />
         </Center>
 

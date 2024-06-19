@@ -43,5 +43,4 @@ export default function App() {
 }
 
 // http://localhost:3333/api-docs/
-// 4 Contextos no React Native
-// Buscando dados do usuário no back-enddo
+// 5 - Autenticação JWT
